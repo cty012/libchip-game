@@ -50,3 +50,13 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode
+.idea
+
+# Builds
+cmake-build-debug/
