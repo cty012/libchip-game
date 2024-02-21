@@ -24,7 +24,7 @@ add_library(chip_game SHARED "${SOURCES}")
 target_include_directories(chip_game PRIVATE "include")
 
 # Installation rules
-install(TARGETS libchip_game DESTINATION "bin")
+install(TARGETS chip_game DESTINATION "bin")
 
 # Temporary test
 add_executable(main "test/main.c")

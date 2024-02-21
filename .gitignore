@@ -59,7 +59,9 @@ dkms.conf
 .idea
 
 # Builds
-cmake-build-debug/
+build/
+cmake-build-*/
+out/
 
 # Python
 *.pyc
