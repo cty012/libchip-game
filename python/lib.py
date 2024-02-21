@@ -1,8 +1,16 @@
 from cffi import FFI
+import platform
 
+
+if platform.system() == "Windows":
+    lib_name = "libchip_game.dll"
+elif platform.system() == "Darwin":
+    lib_name = "libchip_game.dylib"
+else:  # Assuming Linux
+    lib_name = "libchip_game.so"
 
 ffi = FFI()
-lib = ffi.dlopen("libchip_game.dll")
+lib = ffi.dlopen(lib_name)
 
 ffi.cdef("""
 void dealloc(void*);
