@@ -7,7 +7,7 @@ if platform.system() == "Windows":
 elif platform.system() == "Darwin":
     lib_name = "libchip_game.dylib"
 else:  # Assuming Linux
-    lib_name = "libchip_game.so"
+    lib_name = "./libchip_game.so"
 
 ffi = FFI()
 lib = ffi.dlopen(lib_name)
