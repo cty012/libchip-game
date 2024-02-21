@@ -75,6 +75,17 @@ int vector_resize(Vector* vector, size_t size, void* prototype);
 int vector_push_back(Vector* vector, void* element);
 
 /**
+ * Push an array of elements to the back of the vector.
+ * @param vector The target vector.
+ * @param count Total number of elements to push.
+ * @param arr A pointer to an array of elements.
+ * @return Error code:
+ *  - 0: Success.
+ *  - 1: Failed to expand capacity.
+ */
+int vector_push_back_arr(Vector* vector, size_t count, void* arr);
+
+/**
  * Access an element in the vector. For invalid indices, NULL is returned.
  * @param vector The target vector.
  * @param idx Index of the element to access.

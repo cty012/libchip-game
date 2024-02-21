@@ -25,12 +25,16 @@ int main() {
     game_state_init_from_arr(&game_s, N_COLS, N_TOKS, arr);
 
     printf("Before sorting:\n");
-    game_state_print(&game_s);
+    char* str1 = game_state_to_str(&game_s);
+    printf("%s\n", str1);
     game_state_sort(&game_s);
     printf("After sorting:\n");
-    game_state_print(&game_s);
+    char* str2 = game_state_to_str(&game_s);
+    printf("%s\n", str2);
 
     // Release resources
+    free(str1);
+    free(str2);
     game_state_free(&game_s);
     for (size_t i = 0; i < N_COLS; i++) {
         free(arr[i]);

@@ -66,10 +66,11 @@ void column_state_sort(ColumnState* column_s);
 bool column_state_leq(const ColumnState* column_s1, const ColumnState* column_s2);
 
 /**
- * Prints the content of the column state to the console.
+ * Prints the content of the game state to the console.
  * @param column_s The target column state.
+ * @return String representation of the game state.
  */
-void column_state_print(const ColumnState* column_s);
+char* column_state_to_str(const ColumnState* column_s);
 
 /**
  * Game state class.
@@ -138,5 +139,6 @@ void game_state_sort(GameState* game_s);
 /**
  * Prints the content of the game state to the console.
  * @param game_s The target game state.
+ * @return String representation of the game state.
  */
-void game_state_print(const GameState* game_s);
+char* game_state_to_str(const GameState* game_s);

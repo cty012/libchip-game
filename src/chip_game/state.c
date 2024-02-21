@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <chip_game/state.h>
 
 void column_state_init(ColumnState* column_s, size_t n_tokens) {
@@ -42,13 +43,22 @@ bool column_state_leq(const ColumnState* column_s1, const ColumnState* column_s2
     return ans;
 }
 
-void column_state_print(const ColumnState* column_s) {
-    printf("[");
-    for (int i = 0; i < column_s->n_tokens; i++) {
-        if (i) printf(", ");
-        printf("%d", column_state_get(column_s, i));
+char* column_state_to_str(const ColumnState* column_s) {
+    Vector buffer;
+    vector_init_from_arr(&buffer, sizeof(char), 1, "[");
+    for (size_t i = 0; i < column_s->n_tokens; i++) {
+        if (i) {
+            vector_push_back_arr(&buffer, 2, ", ");
+        }
+        char num[12];
+        int digits = snprintf(num, sizeof(num), "%d", column_state_get(column_s, i));
+        vector_push_back_arr(&buffer, digits, num);
     }
-    printf("]\n");
+    vector_push_back_arr(&buffer, 2, "]");
+    // Extract the string
+    char* str = strdup(buffer.data);
+    vector_free(&buffer);
+    return str;
 }
 
 void game_state_init(GameState* game_s, size_t n_columns, size_t n_tokens) {
@@ -58,7 +68,7 @@ void game_state_init(GameState* game_s, size_t n_columns, size_t n_tokens) {
     vector_init(&game_s->columns, sizeof(ColumnState));
     // Initialize the columns
     vector_reserve(&game_s->columns, n_columns);
-    for (int i = 0; i < n_columns; i++) {
+    for (size_t i = 0; i < n_columns; i++) {
         // No need to free column since it is moved into game->columns
         ColumnState column;
         column_state_init(&column, n_tokens);
@@ -73,7 +83,7 @@ void game_state_init_from_arr(GameState* game_s, size_t n_columns, size_t n_toke
     vector_init(&game_s->columns, sizeof(ColumnState));
     // Initialize the columns
     vector_reserve(&game_s->columns, n_columns);
-    for (int i = 0; i < n_columns; i++) {
+    for (size_t i = 0; i < n_columns; i++) {
         // No need to free column since it is moved into game->columns
         ColumnState column;
         column_state_init_from_arr(&column, n_tokens, rows[i]);
@@ -83,7 +93,7 @@ void game_state_init_from_arr(GameState* game_s, size_t n_columns, size_t n_toke
 
 void game_state_free(GameState* game_s) {
     // Free each column
-    for (int i = 0; i < game_s->n_columns; i++) {
+    for (size_t i = 0; i < game_s->n_columns; i++) {
         column_state_free(game_state_get_column(game_s, i));
     }
     // Free the game itself
@@ -109,16 +119,23 @@ void game_state_set(const GameState* game_s, size_t col_idx, size_t tok_idx, int
 }
 
 void game_state_sort(GameState* game_s) {
-    for (int i = 0; i < game_s->n_columns; i++) {
+    for (size_t i = 0; i < game_s->n_columns; i++) {
         column_state_sort(game_state_get_column(game_s, i));
     }
 }
 
-void game_state_print(const GameState* game_s) {
-    printf("{\n");
-    for (int i = 0; i < game_s->n_columns; i++) {
-        printf("  ");
-        column_state_print(game_state_get_column(game_s, i));
+char* game_state_to_str(const GameState* game_s) {
+    Vector buffer;
+    vector_init_from_arr(&buffer, sizeof(char), 1, "[");
+    for (size_t i = 0; i < game_s->n_tokens; i++) {
+        if (i) vector_push_back_arr(&buffer, 2, "\n ");
+        char* column_str = column_state_to_str(game_state_get_column(game_s, i));
+        vector_push_back_arr(&buffer, strlen(column_str), column_str);
+        free(column_str);
     }
-    printf("}\n");
+    vector_push_back_arr(&buffer, 2, "]");
+    // Extract the string
+    char* str = strdup(buffer.data);
+    vector_free(&buffer);
+    return str;
 }

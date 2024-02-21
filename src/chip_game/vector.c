@@ -74,6 +74,19 @@ int vector_push_back(Vector* vector, void* element) {
     return vector_resize(vector, vector->size + 1, element);
 }
 
+int vector_push_back_arr(Vector* vector, size_t count, void* arr) {
+    // Determine the new capacity
+    size_t newCapacity = expand_capacity(vector->capacity, vector->size + count);
+    // Update capacity
+    int err = vector_reserve(vector, newCapacity);
+    if (err) return err;
+    // Resize
+    void* dst = (char*)vector->data + vector->size * vector->element_size;
+    memcpy(dst, arr, count * vector->element_size);
+    vector->size += count;
+    return 0;
+}
+
 void* vector_at(const Vector* vector, size_t idx) {
     if (idx >= vector->size) {
         fprintf(stderr, "Index out of range\n");
