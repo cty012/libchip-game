@@ -2,7 +2,7 @@ from cffi import FFI
 
 
 ffi = FFI()
-lib = ffi.dlopen("libchip-game.dll")
+lib = ffi.dlopen("libchip_game.dll")
 
 ffi.cdef("""
 void* column_state_alloc();

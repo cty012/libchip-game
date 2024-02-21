@@ -7,18 +7,18 @@ set(CMAKE_C_EXTENSIONS OFF)
 
 # Define the library and its source files
 file(GLOB_RECURSE SOURCES "src/*.c")
-add_library(libchip-game SHARED "${SOURCES}")
-target_include_directories(libchip-game PRIVATE "include")
+add_library(libchip_game SHARED "${SOURCES}")
+target_include_directories(libchip_game PRIVATE "include")
 
 # Automatically export all symbols if using MSVC
 if(MSVC)
-    set_target_properties(libchip-game PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+    set_target_properties(libchip_game PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 endif()
 
 # Installation rules
-install(TARGETS libchip-game DESTINATION "bin")
+install(TARGETS libchip_game DESTINATION "bin")
 
 # Temporary test
 add_executable(main "test/main.c")
-target_link_libraries(main PRIVATE libchip-game)
+target_link_libraries(main PRIVATE libchip_game)
 target_include_directories(main PRIVATE "include")
