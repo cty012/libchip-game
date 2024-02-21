@@ -2,11 +2,32 @@
 #include <string.h>
 #include <chip_game/vector.h>
 
+/**
+ * Helper function that determines the new capacity to expand to.
+ * @param capacity The current capacity.
+ * @param target The minimum capacity to reach.
+ * @return The new capacity.
+ */
+size_t expand_capacity(size_t capacity, size_t target) {
+    while (capacity < target) {
+        capacity = capacity ? capacity * 2 : 1;
+    }
+    return capacity;
+}
+
 void vector_init(Vector* vector, size_t element_size) {
     vector->element_size = element_size;
     vector->size = 0;
     vector->capacity = 4;
     vector->data = malloc(vector->capacity * element_size);
+}
+
+void vector_init_from_arr(Vector* vector, size_t element_size, size_t size, void* arr) {
+    vector->element_size = element_size;
+    vector->size = size;
+    vector->capacity = expand_capacity(4, size);
+    vector->data = malloc(vector->capacity * element_size);
+    memcpy(vector->data, arr, vector->element_size * vector->size);
 }
 
 void vector_free(Vector* vector) {
@@ -17,15 +38,6 @@ void vector_free(Vector* vector) {
 
 bool vector_empty(const Vector* vector) {
     return !vector->size;
-}
-
-/**
- * Helper function that determines the new capacity to expand to.
- * @param capacity The current capacity.
- * @return The new capacity.
- */
-size_t expand_capacity(size_t capacity) {
-    return capacity ? capacity * 2 : 1;
 }
 
 int vector_reserve(Vector* vector, size_t capacity) {
@@ -43,10 +55,7 @@ int vector_reserve(Vector* vector, size_t capacity) {
 
 int vector_resize(Vector* vector, size_t size, void* prototype) {
     // Determine the new capacity
-    size_t newCapacity = vector->capacity;
-    while (newCapacity < size) {
-        newCapacity = expand_capacity(vector->capacity);
-    }
+    size_t newCapacity = expand_capacity(vector->capacity, size);
     // Update capacity
     int err = vector_reserve(vector, newCapacity);
     if (err) return err;

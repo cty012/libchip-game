@@ -22,6 +22,15 @@ typedef struct {
 void vector_init(Vector* vector, size_t element_size);
 
 /**
+ * Constructor of Vector.
+ * @param vector The vector to initialize.
+ * @param element_size Size of each element.
+ * @param size Starting size of the vector. Size exceeding the size of arr is undefined behavior.
+ * @param arr Array to initialize the vector with. Must not be NULL.
+ */
+void vector_init_from_arr(Vector* vector, size_t element_size, size_t size, void* arr);
+
+/**
  * Destructor of Vector.
  * @param vector The vector to destroy.
  */

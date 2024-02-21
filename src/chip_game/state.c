@@ -1,13 +1,31 @@
+#include <stdio.h>
 #include <chip_game/state.h>
 
-void column_state_init(ColumnState* column_s, size_t size) {
-    column_s->n_tokens = size;
+void column_state_init(ColumnState* column_s, size_t n_tokens) {
+    column_s->n_tokens = n_tokens;
     vector_init(&column_s->tokens, sizeof(int));
+    int prototype = -1;
+    vector_resize(&column_s->tokens, n_tokens, &prototype);
+}
+
+void column_state_init_from_arr(ColumnState* column_s, size_t n_tokens, int* arr) {
+    column_s->n_tokens = n_tokens;
+    vector_init_from_arr(&column_s->tokens, sizeof(int), n_tokens, arr);
 }
 
 void column_state_free(ColumnState* column_s) {
     vector_free(&column_s->tokens);
     column_s->n_tokens = 0;
+}
+
+int column_state_get(const ColumnState* column_s, size_t tok_idx) {
+    if (tok_idx >= column_s->n_tokens) return -1;
+    return *(int*)vector_at(&column_s->tokens, tok_idx);
+}
+
+void column_state_set(const ColumnState* column_s, size_t tok_idx, int val) {
+    if (tok_idx >= column_s->n_tokens) return;
+    *(int*)vector_at(&column_s->tokens, tok_idx) = val;
 }
 
 void column_state_sort(ColumnState* column_s) {
@@ -24,9 +42,19 @@ bool column_state_leq(const ColumnState* column_s1, const ColumnState* column_s2
     return ans;
 }
 
+void column_state_print(const ColumnState* column_s) {
+    printf("[");
+    for (int i = 0; i < column_s->n_tokens; i++) {
+        if (i) printf(", ");
+        printf("%d", column_state_get(column_s, i));
+    }
+    printf("]\n");
+}
+
 void game_state_init(GameState* game_s, size_t n_columns, size_t n_tokens) {
     // Initialize the game
     game_s->n_columns = n_columns;
+    game_s->n_tokens = n_tokens;
     vector_init(&game_s->columns, sizeof(ColumnState));
     // Initialize the columns
     vector_reserve(&game_s->columns, n_columns);
@@ -38,18 +66,59 @@ void game_state_init(GameState* game_s, size_t n_columns, size_t n_tokens) {
     }
 }
 
+void game_state_init_from_arr(GameState* game_s, size_t n_columns, size_t n_tokens, int** rows) {
+    // Initialize the game
+    game_s->n_columns = n_columns;
+    game_s->n_tokens = n_tokens;
+    vector_init(&game_s->columns, sizeof(ColumnState));
+    // Initialize the columns
+    vector_reserve(&game_s->columns, n_columns);
+    for (int i = 0; i < n_columns; i++) {
+        // No need to free column since it is moved into game->columns
+        ColumnState column;
+        column_state_init_from_arr(&column, n_tokens, rows[i]);
+        vector_push_back(&game_s->columns, &column);
+    }
+}
+
 void game_state_free(GameState* game_s) {
     // Free each column
     for (int i = 0; i < game_s->n_columns; i++) {
-        column_state_free(vector_at(&game_s->columns, i));
+        column_state_free(game_state_get_column(game_s, i));
     }
     // Free the game itself
     vector_free(&game_s->columns);
     game_s->n_columns = 0;
 }
 
+ColumnState* game_state_get_column(const GameState* game_s, size_t col_idx) {
+    if (col_idx >= game_s->n_columns) return NULL;
+    return vector_at(&game_s->columns, col_idx);
+}
+
+int game_state_get(const GameState* game_s, size_t col_idx, size_t tok_idx) {
+    ColumnState* column_s = game_state_get_column(game_s, col_idx);
+    if (!column_s) return -1;
+    return column_state_get(column_s, tok_idx);
+}
+
+void game_state_set(const GameState* game_s, size_t col_idx, size_t tok_idx, int val) {
+    ColumnState* column_s = game_state_get_column(game_s, col_idx);
+    if (!column_s) return;
+    column_state_set(column_s, tok_idx, val);
+}
+
 void game_state_sort(GameState* game_s) {
     for (int i = 0; i < game_s->n_columns; i++) {
-        column_state_sort(vector_at(&game_s->columns, i));
+        column_state_sort(game_state_get_column(game_s, i));
     }
+}
+
+void game_state_print(const GameState* game_s) {
+    printf("{\n");
+    for (int i = 0; i < game_s->n_columns; i++) {
+        printf("  ");
+        column_state_print(game_state_get_column(game_s, i));
+    }
+    printf("}\n");
 }

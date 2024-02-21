@@ -1,29 +1,41 @@
 #include <stdio.h>
-#include <chip_game/vector.h>
+#include <chip_game/state.h>
+
+#define N_COLS 4
+#define N_TOKS 3
 
 int main() {
-    int numbers[] = { 7, 3, 9, 4, 6, 1, 2 };
-    size_t n = sizeof(numbers) / sizeof(numbers[0]);
+    // Initialize 2D array
+    int data[N_COLS][N_TOKS] = {
+            {-1, 7, 4},
+            {3, 4, 3},
+            {6, 3, -1},
+            {-1, -1, 0}};
 
-    Vector vector;
-    vector_init(&vector, sizeof(int));
-    for (size_t i = 0; i < n; i++) {
-        vector_push_back(&vector, &numbers[i]);
+    int** arr = malloc(sizeof(int*) * N_COLS);
+    for (size_t i = 0; i < N_COLS; i++) {
+        arr[i] = malloc(sizeof(int*) * N_TOKS);
+        for (size_t j = 0; j < N_TOKS; j++) {
+            arr[i][j] = data[i][j];
+        }
     }
 
-    for (size_t i = 0; i < n; i++) {
-        printf("%d ", *(int*)vector_at(&vector, i));
+    // Game state
+    GameState game_s;
+    game_state_init_from_arr(&game_s, N_COLS, N_TOKS, arr);
+
+    printf("Before sorting:\n");
+    game_state_print(&game_s);
+    game_state_sort(&game_s);
+    printf("After sorting:\n");
+    game_state_print(&game_s);
+
+    // Release resources
+    game_state_free(&game_s);
+    for (size_t i = 0; i < N_COLS; i++) {
+        free(arr[i]);
     }
-    printf("\n");
-
-    vector_sort(&vector, &compare_int_dec);
-
-    for (size_t i = 0; i < n; i++) {
-        printf("%d ", *(int*)vector_at(&vector, i));
-    }
-    printf("\n");
-
-    vector_free(&vector);
+    free(arr);
 
     return 0;
 }
