@@ -1,13 +1,11 @@
 #pragma once
 
 #include <stdlib.h>
+#include <chip_game/compare_func.h>
 
 /**
- * Compares two elements. If the first is less than the second, return a negative number. If the first is greater than
- * the second, return a positive number. Otherwise 0 is returned.
+ * Generic vector class.
  */
-typedef int (*CompareFunc)(const void*, const void*);
-
 typedef struct {
     void* data;
     size_t element_size;
@@ -18,7 +16,7 @@ typedef struct {
 /**
  * Constructor of Vector.
  * @param vector The vector to initialize.
- * @param element_size
+ * @param element_size Size of each element.
  */
 void vector_init(Vector* vector, size_t element_size);
 
@@ -27,6 +25,12 @@ void vector_init(Vector* vector, size_t element_size);
  * @param vector The vector to destroy.
  */
 void vector_free(Vector* vector);
+
+// TODO
+void vector_reserve(Vector* vector, size_t capacity);
+
+// TODO
+void vector_resize(Vector* vector, size_t size);
 
 /**
  * Push an element to the back of the vector.
@@ -44,8 +48,8 @@ void vector_push_back(Vector* vector, void* element);
 void* vector_at(Vector* vector, size_t idx);
 
 /**
- * Sort the vector from small to large.
- * @param vector
- * @param compare A compare function
+ * Sort the vector according to the compare function.
+ * @param vector The target vector.
+ * @param compare The compare function that defines the total order of vector elements.
  */
 void vector_sort(Vector* vector, CompareFunc compare);
