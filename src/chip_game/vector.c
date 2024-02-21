@@ -15,19 +15,54 @@ void vector_free(Vector* vector) {
     vector->size = vector->capacity = 0;
 }
 
-void vector_push_back(Vector* vector, void* element) {
-    if (vector->size == vector->capacity) {
-        size_t newCapacity = vector->capacity == 0 ? 1 : vector->capacity * 2;
-        void* newData = realloc(vector->data, newCapacity * vector->element_size);
-        if (newData == NULL) {
-            fprintf(stderr, "Failed to allocate memory\n");
-            return;
-        }
-        vector->data = newData;
-        vector->capacity = newCapacity;
+bool vector_empty(Vector* vector) {
+    return !vector->size;
+}
+
+/**
+ * Helper function that determines the new capacity to expand to.
+ * @param capacity The current capacity.
+ * @return The new capacity.
+ */
+size_t expand_capacity(size_t capacity) {
+    return capacity ? capacity * 2 : 1;
+}
+
+int vector_reserve(Vector* vector, size_t capacity) {
+    if (capacity == vector->capacity) return 0;
+    if (vector->size > capacity) capacity = vector->size;
+    void* newData = realloc(vector->data, capacity * vector->element_size);
+    if (newData == NULL) {
+        fprintf(stderr, "Failed to allocate memory\n");
+        return 1;
     }
-    memcpy((char*)vector->data + vector->size * vector->element_size, element, vector->element_size);
-    vector->size++;
+    vector->data = newData;
+    vector->capacity = capacity;
+    return 0;
+}
+
+int vector_resize(Vector* vector, size_t size, void* prototype) {
+    // Determine the new capacity
+    size_t newCapacity = vector->capacity;
+    while (newCapacity < size) {
+        newCapacity = expand_capacity(vector->capacity);
+    }
+    // Update capacity
+    int err = vector_reserve(vector, newCapacity);
+    if (err) return err;
+    // Resize
+    if (size > vector->size) {
+        for (size_t i = 0; i < size - vector->size; i++) {
+            void* dst = (char*)vector->data + (vector->size + i) * vector->element_size;
+            memcpy(dst, prototype, vector->element_size);
+        }
+    }
+    vector->size = size;
+    return 0;
+}
+
+int vector_push_back(Vector* vector, void* element) {
+    return vector_resize(vector, vector->size + 1, element);
 }
 
 void* vector_at(Vector* vector, size_t idx) {
@@ -36,6 +71,22 @@ void* vector_at(Vector* vector, size_t idx) {
         return NULL;
     }
     return (char*)vector->data + idx * vector->element_size;
+}
+
+void* vector_front(Vector* vector) {
+    if (!vector->size) {
+        fprintf(stderr, "Vector is empty\n");
+        return NULL;
+    }
+    return vector->data;
+}
+
+void* vector_back(Vector* vector) {
+    if (!vector->size) {
+        fprintf(stderr, "Vector is empty\n");
+        return NULL;
+    }
+    return (char*)vector->data + (vector->size - 1) * vector->element_size;
 }
 
 void vector_sort(Vector* vector, CompareFunc compare) {
