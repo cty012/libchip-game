@@ -15,7 +15,7 @@ void vector_free(Vector* vector) {
     vector->size = vector->capacity = 0;
 }
 
-bool vector_empty(Vector* vector) {
+bool vector_empty(const Vector* vector) {
     return !vector->size;
 }
 
@@ -65,7 +65,7 @@ int vector_push_back(Vector* vector, void* element) {
     return vector_resize(vector, vector->size + 1, element);
 }
 
-void* vector_at(Vector* vector, size_t idx) {
+void* vector_at(const Vector* vector, size_t idx) {
     if (idx >= vector->size) {
         fprintf(stderr, "Index out of range\n");
         return NULL;

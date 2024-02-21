@@ -32,7 +32,7 @@ void vector_free(Vector* vector);
  * @param vector The target vector.
  * @return Whether the vector has size 0.
  */
-bool vector_empty(Vector* vector);
+bool vector_empty(const Vector* vector);
 
 /**
  * Reserve capacity in the vector. New capacity will be at least as large as the current size of the vector.
@@ -71,7 +71,7 @@ int vector_push_back(Vector* vector, void* element);
  * @param idx Index of the element to access.
  * @return The pointer to the element stored in the vector with the given index.
  */
-void* vector_at(Vector* vector, size_t idx);
+void* vector_at(const Vector* vector, size_t idx);
 
 /**
  * Access the first element in the vector. NULL is returned for empty vectors.
