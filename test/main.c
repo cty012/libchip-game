@@ -1,10 +1,11 @@
 #include <stdio.h>
+#include <chip_game/map.h>
 #include <chip_game/state.h>
 
 #define N_COLS 4
 #define N_TOKS 3
 
-int main() {
+void test_state() {
     // Initialize 2D array
     int data[N_COLS][N_TOKS] = {
             {-1, 7, 4},
@@ -40,6 +41,26 @@ int main() {
         free(arr[i]);
     }
     free(arr);
+}
 
+void test_map() {
+    HashMap map;
+    hashmap_init(&map);
+
+    hashmap_insert(&map, "key1", "1");
+    hashmap_insert(&map, "key2", "2");
+
+    printf("The value for 'key1' is %s\n", (char*)hashmap_at(&map, "key1"));
+    printf("The value for 'key2' is %s\n", (char*)hashmap_at(&map, "key2"));
+
+    hashmap_remove(&map, "key1");
+
+    printf("After deleting, the value for 'key1' is %s\n", (char*)hashmap_at(&map, "key1"));
+
+    hashmap_free(&map);
+}
+
+int main() {
+    test_map();
     return 0;
 }

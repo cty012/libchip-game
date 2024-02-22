@@ -70,8 +70,8 @@ int vector_resize(Vector* vector, size_t size, void* prototype) {
     return 0;
 }
 
-int vector_push_back(Vector* vector, void* element) {
-    return vector_resize(vector, vector->size + 1, element);
+int vector_push_back(Vector* vector, void* ptr_to_element) {
+    return vector_resize(vector, vector->size + 1, ptr_to_element);
 }
 
 int vector_push_back_arr(Vector* vector, size_t count, void* arr) {
@@ -109,6 +109,16 @@ void* vector_back(Vector* vector) {
         return NULL;
     }
     return (char*)vector->data + (vector->size - 1) * vector->element_size;
+}
+
+size_t vector_remove(Vector* vector, size_t idx) {
+    if (idx >= vector->size) return 0;
+    char* dest = (char*)vector->data + idx * vector->element_size;
+    char* src = dest + vector->element_size;
+    size_t count = vector->size - idx - 1;
+    memcpy(dest, src, count * vector->element_size);  // Safe because shifting left
+    vector->size--;
+    return 1;
 }
 
 void vector_sort(Vector* vector, CompareFunc compare) {

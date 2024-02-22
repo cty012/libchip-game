@@ -67,12 +67,12 @@ int vector_resize(Vector* vector, size_t size, void* prototype);
 /**
  * Push an element to the back of the vector.
  * @param vector The target vector.
- * @param element The pointer to the element to push into the vector.
+ * @param ptr_to_element The pointer to the element to push into the vector.
  * @return Error code:
  *  - 0: Success.
  *  - 1: Failed to expand capacity.
  */
-int vector_push_back(Vector* vector, void* element);
+int vector_push_back(Vector* vector, void* ptr_to_element);
 
 /**
  * Push an array of elements to the back of the vector.
@@ -106,6 +106,14 @@ void* vector_front(Vector* vector);
  * @return The pointer to the last element in the vector.
  */
 void* vector_back(Vector* vector);
+
+/**
+ * Removes an element with the given index from the vector. If index is invalid then nothing will be removed.
+ * @param vector The target vector.
+ * @param idx The index to remove.
+ * @return The number of elements removed.
+ */
+size_t vector_remove(Vector* vector, size_t idx);
 
 /**
  * Sort the vector according to the compare function.
