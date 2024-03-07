@@ -8,7 +8,7 @@
  * Generic vector class.
  */
 typedef struct {
-    void* data;
+    void* data;  // Pointer to continuous blocks of elements (owned by Vector)
     size_t element_size;
     size_t size;
     size_t capacity;
@@ -37,11 +37,10 @@ void vector_init_from_arr(Vector* vector, size_t element_size, size_t size, void
 void vector_free(Vector* vector);
 
 /**
- * Checks whether the vector is empty.
  * @param vector The target vector.
- * @return Whether the vector has size 0.
+ * @return Capacity of the vector.
  */
-bool vector_empty(const Vector* vector);
+size_t vector_capacity(Vector* vector);
 
 /**
  * Reserve capacity in the vector. New capacity will be at least as large as the current size of the vector.
@@ -52,6 +51,19 @@ bool vector_empty(const Vector* vector);
  *  - 1: Failed to reallocate memory.
  */
 int vector_reserve(Vector* vector, size_t capacity);
+
+/**
+ * @param vector The target vector.
+ * @return The size of the vector.
+ */
+size_t vector_size(Vector* vector);
+
+/**
+ * Checks whether the vector is empty.
+ * @param vector The target vector.
+ * @return Whether the vector has size 0.
+ */
+bool vector_empty(const Vector* vector);
 
 /**
  * Resize the vector.
@@ -114,6 +126,13 @@ void* vector_back(Vector* vector);
  * @return The number of elements removed.
  */
 size_t vector_remove(Vector* vector, size_t idx);
+
+/**
+ * Clears all elements in the vector.
+ * @param vector The target vector.
+ * @return The number of elements removed.
+ */
+size_t vector_clear(Vector* vector);
 
 /**
  * Sort the vector according to the compare function.

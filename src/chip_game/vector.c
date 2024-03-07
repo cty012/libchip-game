@@ -36,8 +36,8 @@ void vector_free(Vector* vector) {
     vector->size = vector->capacity = 0;
 }
 
-bool vector_empty(const Vector* vector) {
-    return !vector->size;
+size_t vector_capacity(Vector* vector) {
+    return vector->capacity;
 }
 
 int vector_reserve(Vector* vector, size_t capacity) {
@@ -51,6 +51,14 @@ int vector_reserve(Vector* vector, size_t capacity) {
     vector->data = newData;
     vector->capacity = capacity;
     return 0;
+}
+
+size_t vector_size(Vector* vector) {
+    return vector->size;
+}
+
+bool vector_empty(const Vector* vector) {
+    return !vector->size;
 }
 
 int vector_resize(Vector* vector, size_t size, void* prototype) {
@@ -119,6 +127,12 @@ size_t vector_remove(Vector* vector, size_t idx) {
     memcpy(dest, src, count * vector->element_size);  // Safe because shifting left
     vector->size--;
     return 1;
+}
+
+size_t vector_clear(Vector* vector) {
+    size_t size = vector->size;
+    vector->size = 0;
+    return size;
 }
 
 void vector_sort(Vector* vector, CompareFunc compare) {

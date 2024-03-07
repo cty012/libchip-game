@@ -47,17 +47,17 @@ void test_map() {
     HashMap map;
     hashmap_init(&map);
 
-    hashmap_insert(&map, "key1", "1");
-    hashmap_insert(&map, "key2", "2");
+    hashmap_insert(&map, "key1", "1", false);
+    hashmap_insert(&map, "key2", "2", false);
 
     printf("The value for 'key1' is %s\n", (char*)hashmap_at(&map, "key1"));
     printf("The value for 'key2' is %s\n", (char*)hashmap_at(&map, "key2"));
 
-    hashmap_remove(&map, "key1");
+    hashmap_remove(&map, "key1", false);
 
     printf("After deleting, the value for 'key1' is %s\n", (char*)hashmap_at(&map, "key1"));
 
-    hashmap_free(&map);
+    hashmap_free(&map, false);
 }
 
 int main() {

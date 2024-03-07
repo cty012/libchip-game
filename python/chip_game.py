@@ -25,6 +25,16 @@ class ColumnState:
         _lib.dealloc(self.column_s)
 
 
+class ColumnStateReference:
+    def __init__(self, game_s, col_idx):
+        self.game_s = game_s
+        self.column_s = _lib.game_state_get_column(game_s, col_idx)
+        self.col_idx = col_idx
+
+    def sort(self):
+        _lib.column_state_sort(self.column_s)
+
+
 class GameState:
     def __init__(self, n_columns, n_tokens, rows):
         self.n_columns = n_columns
